@@ -11,6 +11,9 @@
     <!-- Embed Babylon loader scripts for .gltf and other filetypes. -->
     <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
 
+    <!--babylon js GUI-->
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+
     <!-- Embed pep.js for consistent cross-browser pointer events. -->
     <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
 
@@ -19,9 +22,6 @@
 
     <!-- p5.js  -->
     <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
-
-    <!--babylon js GUI-->
-    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
 
     <style>
         html,
@@ -59,7 +59,7 @@
     <canvas id="render-canvas"></canvas>
     <div id="graincanvasContainer"></div>
     <!-- grain synthesis algorithm by Jacob Johnson https://github.com/j-t-johnson/granular-machine -->
-    <script src="grainsynth_fromGUI.js"></script>
+    <script src="grainsynth/grainmachine.js"></script>
     <!-- Our Babylon.js implementation. -->
     <script src="scene_grains.js"></script>
 
@@ -68,33 +68,6 @@
         <div class="wrapper">
             <div id="container">
                 <h1>granular machine</h1>
-                <hr>
-                <!--
-                <div>
-                    <form id="buffers">
-                        <select name="source" class="choice" id="buffsel">
-                            <option value="elements" id="elements">elements</option>
-                            <option value="guitar" id="guitar">guitar</option>
-                            <option value="piano" id="piano">piano</option>
-                        </select>
-                    </form>
-                    <div id="startContainer" class="slidercontainer">
-                        <input id="startButton" type="button" value="start">
-                    </div>
-                    <div id="densityContainer" class="slidercontainer">
-                        <input type="range" id="density" min="10" max="500" value="35" class="slider">
-                        <label for="density">density</label>
-                    </div>
-                    <div id="attackContainer" class="slidercontainer">
-                        <input type="range" id="attack" min="0.01" max="1" step="0.01" value="0.1" class="slider">
-                        <label for="attack">attack</label>
-                    </div>
-                    <div id="decayContainer" class="slidercontainer">
-                        <input type="range" id="decay" min="0.01" max="1" step="0.01" value="0.1" class="slider">
-                        <label for="decay">decay</label>
-                    </div>
-                </div>
-            -->
             </div>
         </div>
     </header>
