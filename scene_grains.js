@@ -12,6 +12,7 @@ const createDefaultEngine = function () {
 
 // Create scene and create XR experience.
 const createScene = async function () {
+
     // Create a basic Babylon XR scene
     let scene = new BABYLON.Scene(engine);
     let camera = new BABYLON.FreeCamera('camera-1', new BABYLON.Vector3(0, 1.4, -1.2), scene);
@@ -103,6 +104,53 @@ const createScene = async function () {
     sphereRightMat.diffuseColor = new BABYLON.Color3(0.5, 0.5, 1);
     sphereRight.material = sphereRightMat;
 
+    // ---------- Audio Context ------------------//
+
+        //initialize audio context for grainsynth
+        ctx = new (AudioContext || webkitAudioContext);
+        init(ctx);
+        grainSample = 0; // 0 = synthetic sound, 2 = guitar sound, 3 = piano with echo sound
+        bufferSwitch(grainSample);
+    
+        // initialize default theremin sound
+        oscillator = null;
+        gainNode = ctx.createGain();
+        gainNode.gain.value = 0.5;
+        var soundPlaying = false;
+    
+        //from theremin sound 
+        // Calculate frequency relative to PitchAntenna
+        var calculateFrequency = function (distance) {
+            var minFrequency = 131; // C3
+            maxFrequency = 494; // B4
+    
+            var pitchSensitivity = 10;
+    
+            return Math.exp(-distance * pitchSensitivity) * (maxFrequency - minFrequency) + minFrequency;
+        };
+    
+        var calculateGain = function (distance) {
+            var minGain = 0;
+            maxGain = 1;
+    
+            var gainSensitivity = 1;
+    
+            return Math.exp(-distance * gainSensitivity) * (maxGain - minGain) + minGain;
+        };
+    
+        var setFrequency = () => {
+            pitchDistance = BABYLON.Vector3.DistanceSquared(sphereRight.position, pitchAntennaPosition);
+            oscillator.frequency.setTargetAtTime(calculateFrequency(pitchDistance), ctx.currentTime, 0.01);
+        };
+    
+        var setGain = () => {
+            var volumeDistance = BABYLON.Vector3.DistanceSquared(sphereLeft.position, volumeAntennaPosition);
+            gainNode.gain.setTargetAtTime(1 - calculateGain(volumeDistance), ctx.currentTime, 0.01);
+        };    
+
+
+        // ------------------- Pose Detection ------------------//
+
     // Listen to new 'pose' events
     poseNet.on('pose', function (results) {
         if (results.length > 0) {
@@ -122,9 +170,76 @@ const createScene = async function () {
             posY = map(poses.leftWrist.y, 0, video.height, 0, window.innerHeight);
             posX = map(poses.rightWrist.x, 0, video.width, 0, window.innerWidth);
             grains(posX,posY); 
+
+            if (soundPlaying) {
+                setFrequency();
+                setGain();
+            }
     
         }
     });
+
+    // ------------------ Theremin Oscillator Param GUI ----------------//
+
+        // GUI
+        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI('UI');
+
+        var button0 = BABYLON.GUI.Button.CreateSimpleButton('but1', 'Start/Stop Sound');
+        button0.width = '150px';
+        button0.height = '40px';
+        button0.color = 'black';
+        button0.background = 'white';
+        button0.onPointerUpObservable.add(function () {
+            if (ctx.state === 'running') {
+                ctx.suspend().then(function () {
+                    //startBtn.textContent = 'Resume context';
+                });
+            } else if (ctx.state === 'suspended') {
+                ctx.resume().then(function () {
+                    //susresBtn.textContent = 'Suspend context';
+                });
+            }   
+        });
+        advancedTexture.addControl(button0);
+
+        var button1 = BABYLON.GUI.Button.CreateSimpleButton('but1', 'Start Theremin');
+        button1.width = '150px';
+        button1.height = '40px';
+        button1.color = 'black';
+        button1.background = 'white';
+        button1.top = 50;
+        button1.onPointerUpObservable.add(function () {
+            if (ctx.state === 'running') {
+           // ctx.resume().then(() => {
+                soundPlaying = true;
+                oscillator = ctx.createOscillator();
+                //setFrequency();
+                //setGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(ctx.destination);
+                oscillator.start(ctx.currentTime);
+            }
+         //   });
+        });
+        advancedTexture.addControl(button1);
+    
+        var button2 = BABYLON.GUI.Button.CreateSimpleButton('but1', 'Stop Theremin');
+        button2.width = '150px';
+        button2.height = '40px';
+        button2.color = 'black';
+        button2.background = 'white';
+        button2.top = 100;
+        button2.onPointerUpObservable.add(function () {
+            if (oscillator) {
+                soundPlaying = false;
+                oscillator.stop(ctx.currentTime);
+                oscillator.disconnect();
+            }
+        });
+        advancedTexture.addControl(button2);
+
+
+    //------------------- Grain Param GUI --------------------//
 
         // GUI for grain params
         var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -143,15 +258,22 @@ const createScene = async function () {
         button1.cornerRadius = 20;
         button1.background = "green";
         button1.onPointerUpObservable.add(function() {
-            if (ctx.state === 'running') {
-                    ctx.suspend().then(function () {
-                        //startBtn.textContent = 'Resume context';
-                    });
-                } else if (ctx.state === 'suspended') {
-                    ctx.resume().then(function () {
-                        //susresBtn.textContent = 'Suspend context';
-                    });
-                }
+            master = ctx.createGain();
+            master.connect(ctx.destination);
+            bufferSwitch(grainSample);
+        });
+        panel.addControl(button1);
+
+        var button1 = BABYLON.GUI.Button.CreateSimpleButton("but1", "Stop Grains");
+        button1.width = "80px"
+        button1.height = "20px";
+        button1.color = "white";
+        button1.cornerRadius = 20;
+        button1.background = "green";
+        button1.onPointerUpObservable.add(function() {
+           // if (ctx.state === 'running') {
+                    master.disconnect()
+        //}
         });
         panel.addControl(button1);
     
@@ -162,7 +284,8 @@ const createScene = async function () {
         checkboxElems.color = "green";
         checkboxElems.onIsCheckedChangedObservable.add(function (value) {
             checkboxElems.isChecked = true;
-            bufferSwitch(0);
+            grainSample = 0;
+            bufferSwitch(grainSample);
         });
         var checkboxGtr = new BABYLON.GUI.Checkbox();
         checkboxGtr.width = "20px";
@@ -171,7 +294,8 @@ const createScene = async function () {
         checkboxGtr.color = "green";
         checkboxGtr.onIsCheckedChangedObservable.add(function (value) {
             checkboxGtr.isChecked = true;
-            bufferSwitch(1);
+            grainSample = 1;
+            bufferSwitch(grainSample);
         });
         var checkboxPn = new BABYLON.GUI.Checkbox();
         checkboxPn.width = "20px";
@@ -180,7 +304,8 @@ const createScene = async function () {
         checkboxPn.color = "green";
         checkboxPn.onIsCheckedChangedObservable.add(function (value) {
             checkboxPn.isChecked = true;
-            bufferSwitch(2);
+            grainSample = 2
+            bufferSwitch(grainSample);
         });
     
     

@@ -22,11 +22,11 @@ var posX, posY;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-// "loadbang"
-window.onload = function () {
+//initialize grain synth
+function init(audioCtx) {
 
     //web audio setup
-    ctx = new (AudioContext || webkitAudioContext);
+    ctx = audioCtx;
 
     //master volume
     master = ctx.createGain();
@@ -52,9 +52,6 @@ window.onload = function () {
 
     getIr.send();
 
-
-    // //load buffer with page
-     bufferSwitch(0);
 
 }
 
