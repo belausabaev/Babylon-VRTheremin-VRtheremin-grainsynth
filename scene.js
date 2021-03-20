@@ -18,15 +18,17 @@ const createScene = async function () {
     camera.setTarget(new BABYLON.Vector3(0, 1.4, 0));
     camera.attachControl(canvas, true);
 
-    let hemisphericLight = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 10, 0), scene);
-    hemisphericLight.intensity = 1;
-    let light = new BABYLON.PointLight('spotLight', new BABYLON.Vector3(0, 1.2, -0.2), scene);
-    light.intensity = 0.2;
+    let light = new BABYLON.SpotLight(
+        'spotLight',
+        new BABYLON.Vector3(0, 1.5, -0.3),
+        new BABYLON.Vector3(0, -1, 0),
+        Math.PI / 1.3,
+        2,
+        scene
+    );
+    light.intensity = 3;
 
-    scene.clearColor = new BABYLON.Color3(0.1, 0.1, 0.1);
-    // scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
-    // scene.fogColor = new BABYLON.Color3(0.1, 0.1, 0.1);
-    // scene.fogDensity = 0.2;
+    scene.clearColor = new BABYLON.Color3(0.0, 0.0, 0.0);
 
     var pitchAntennaPosition = new BABYLON.Vector3();
     var volumeAntennaPosition = new BABYLON.Vector3();
@@ -38,19 +40,18 @@ const createScene = async function () {
     });
 
     // ------- FILM CLIP ON PLANE -------
-    var videoPlane = BABYLON.MeshBuilder.CreatePlane('plane', { width: 8, height: 4.5 }, scene);
-    videoPlane.position = new BABYLON.Vector3(0, 2, 6);
+    // var videoPlane = BABYLON.MeshBuilder.CreatePlane('plane', { width: 8, height: 4.5 }, scene);
+    // videoPlane.position = new BABYLON.Vector3(0, 1, 3);
 
-    var videoMaterial = new BABYLON.StandardMaterial('texture1', scene);
-    // videoMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
+    // var videoMaterial = new BABYLON.StandardMaterial('texture1', scene);
 
-    var videoTexture = new BABYLON.VideoTexture('video', './data/video/farmersspring.mp4', scene, true);
-    videoTexture.video.muted = true;
-    videoMaterial.diffuseTexture = videoTexture;
-    videoMaterial.emissiveColor = new BABYLON.Color3.White();
-    videoPlane.material = videoMaterial;
+    // var videoTexture = new BABYLON.VideoTexture('video', './data/video/farmersspring.mp4', scene, true);
+    // videoTexture.video.muted = true;
+    // videoMaterial.diffuseTexture = videoTexture;
+    // videoMaterial.emissiveColor = new BABYLON.Color3.White();
+    // videoPlane.material = videoMaterial;
 
-    videoTexture.video.play();
+    // videoTexture.video.play();
 
     // ------- WEBCAM VIDEO + ML POSE RECOGNITION -------
 
@@ -85,32 +86,108 @@ const createScene = async function () {
     function modelReady() {
         console.log('model Loaded');
     }
+    // ------- PARTICLES -------
+    let particleSystem = [];
+    let colorright = new BABYLON.Color4(1.0, 0.65, 0, 1.0);
+    let colorleft = new BABYLON.Color4(1.0, 0.2, 0, 1.0);
 
-    // ------- SPHERES -------
-    let sphereLeft = BABYLON.Mesh.CreateSphere('sphereLeft', 16, 0.1);
-    sphereLeft.position.x = -0.32;
-    sphereLeft.position.y = 1.1;
-    sphereLeft.position.z = -0.1;
-    let sphereLeftMat = new BABYLON.StandardMaterial('sphereMat', scene);
-    sphereLeftMat.diffuseColor = new BABYLON.Color3(1, 0.5, 0.5);
-    sphereLeft.material = sphereLeftMat;
+    createParticles(colorright, 0);
+    createParticles(colorleft, 1);
 
-    let sphereRight = BABYLON.Mesh.CreateSphere('sphereRight', 16, 0.1);
-    sphereRight.position.x = 0.17;
-    sphereRight.position.y = 1.1;
-    sphereRight.position.z = -0.1;
-    let sphereRightMat = new BABYLON.StandardMaterial('sphereMat', scene);
-    sphereRightMat.diffuseColor = new BABYLON.Color3(0.5, 0.5, 1);
-    sphereRight.material = sphereRightMat;
+    function createParticles(color, i) {
+        particleSystem[i] = new BABYLON.ParticleSystem('particles', 1500, scene);
+        particleSystem[i].particleTexture = new BABYLON.Texture('https://www.babylonjs.com/assets/Flare.png', scene);
+        particleSystem[i].minEmitBox = new BABYLON.Vector3(-0.01, 0, -0.01); // minimum box dimensions
+        particleSystem[i].emitter = new BABYLON.Vector3(0, 1, -0.03); // the point at the top of the fountain
+        particleSystem[i].maxEmitBox = new BABYLON.Vector3(0.01, 0, 0.01); // maximum box dimensions
+        particleSystem[i].color1 = color;
+        particleSystem[i].blendMode = BABYLON.ParticleSystem.BLENDMODE_ONEONE;
+        particleSystem[i].minSize = 0.005;
+        particleSystem[i].maxSize = 0.03;
+        particleSystem[i].minLifeTime = 0.1;
+        particleSystem[i].maxLifeTime = 0.2;
+        particleSystem[i].emitRate = 300;
+        particleSystem[i].direction1 = new BABYLON.Vector3(1, 1, 2);
+        particleSystem[i].direction2 = new BABYLON.Vector3(-1, -1, -2);
+        particleSystem[i].minEmitPower = 0.1;
+        particleSystem[i].maxEmitPower = 0.4;
+        particleSystem[i].updateSpeed = 0.002;
+        particleSystem[i].start();
+    }
 
-    // Listen to new 'pose' events
+    // particles position - hand tracking
     poseNet.on('pose', function (results) {
         if (results.length > 0) {
             poses = results[0].pose;
-            // console.log(poses.rightWrist.x);
-            sphereLeft.position.y = map(poses.leftWrist.y, 255, 0, 0.8, 1.8);
-            sphereRight.position.x = map(poses.rightWrist.x, 100, 255, 0.05, 0.8);
+
+            rightPosX = map(poses.rightWrist.x, 100, 255, 0.05, 0.8);
+            rightPosY = map(poses.rightWrist.y, 255, 0, 1, 1.8);
+            leftPosX = map(poses.leftWrist.x, 100, 255, -0.25, -0.1);
+            leftPosY = map(poses.leftWrist.y, 255, 0, 1, 1.8);
+
+            particleSystem[0].emitter.x = rightPosX;
+            particleSystem[0].emitter.y = rightPosY;
+            particleSystem[1].emitter.x = leftPosX;
+            particleSystem[1].emitter.y = leftPosY;
+
+            posY = map(poses.leftWrist.y, 0, video.height, 0, window.innerHeight);
+            posX = map(poses.rightWrist.x, 0, video.width, 0, window.innerWidth);
+            grains(posX, posY);
         }
+    });
+
+    // GUI for grain params
+    // Documentation: https://cocopon.github.io/tweakpane/input.html
+
+    const PARAMS = {
+        source: 0,
+        attack: 0.1,
+        decay: 0.1,
+        density: 35,
+    };
+
+    const pane = new Tweakpane({
+        title: 'THEREMIN GRANULAR SYNTHESIS',
+        expanded: true,
+    });
+
+    const btn = pane.addButton({
+        title: '► | ◼︎',
+        label: 'sound',
+    });
+
+    btn.on('click', () => {
+        console.log(ctx.state);
+        if (ctx.state === 'running') {
+            ctx.suspend().then(function () {});
+        } else if (ctx.state === 'suspended') {
+            ctx.resume().then(function () {});
+        }
+    });
+
+    const SourceInput = pane.addInput(PARAMS, 'source', { options: { Elements: 0, Guitar: 1, Piano: 2 } });
+    SourceInput.on('change', function (ev) {
+        bufferSwitch(ev.value);
+    });
+
+    const f = pane.addFolder({
+        title: 'GRAIN SETTINGS',
+        expanded: true,
+    });
+
+    const attackInput = f.addInput(PARAMS, 'attack', { min: 0.01, max: 1, step: 0.01 });
+    attackInput.on('change', function (ev) {
+        // change something
+    });
+
+    const decayInput = f.addInput(PARAMS, 'decay', { min: 0.01, max: 1, step: 0.01 });
+    decayInput.on('change', function (ev) {
+        // change something
+    });
+
+    const densityInput = f.addInput(PARAMS, 'density', { min: 10, max: 500, step: 5 });
+    densityInput.on('change', function (ev) {
+        // change something
     });
 
     return scene;
