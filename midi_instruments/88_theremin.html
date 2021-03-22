@@ -1,0 +1,45 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>js theremin (88 samples)</title>
+    <link rel= stylesheet href="theremin.css">
+    <script type="text/javascript" src="jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="myfonts/pan_flute-mp3.js"></script>
+    <script type="text/javascript" src="myfonts/acoustic_grand_piano-mp3.js"></script>
+    <script type="text/javascript" src="myfonts/choir_aahs-mp3.js"></script>
+    <script type="text/javascript" src="myfonts/orchestral_harp-mp3.js"></script>
+    <script type="text/javascript" src="myfonts/pan_flute-mp3.js"></script>
+    <script type="text/javascript" src="myfonts/shamisen-mp3.js"></script>
+    <script type="text/javascript" src="myfonts/vibraphone-mp3.js"></script>
+    <script type="text/javascript" src="myfonts/violin-mp3.js"></script>
+    <script type="text/javascript" src="myfonts/electric_guitar_clean-mp3.js"></script>
+    <script type="text/javascript" src="88_theremin_main.js"></script>
+</head>
+
+<body>
+<h4>WebAudio Theremin</h4>Click to play, move mouse to change pitch/volume. Pitch is horizontal, volume is vertical.<br><br>
+You can also hover over and press a key.<br><br>
+Behavior is different depending on browser. Try in Chrome.<br><br>
+<div id="pitch">0 hz</div>
+<div id="volume">0 %</div>
+<br>
+<canvas id="theremin"></canvas>
+<br><br>
+<form id="radio_instrument">
+    <u>Instrument</u><br>
+    <input type="radio" name="instrument" value="violin" checked>Violin<br>
+    <input type="radio" name="instrument" value="panflute">Pan Flute<br>
+    <input type="radio" name="instrument" value="choiraahs">Choir Aahs<br>
+    <input type="radio" name="instrument" value="vibraphone">Vibraphone<br>
+    <input type="radio" name="instrument" value="piano">Piano<br>
+    <input type="radio" name="instrument" value="harp">Harp<br>
+    <input type="radio" name="instrument" value="electricguitar">Electric Guitar<br>
+    <input type="radio" name="instrument" value="shamisen">Shamisen<br>
+</form>
+<br><br>
+<u><h4>Credits</h4></u>
+javascript-converted soundfonts from <a href="https://github.com/gleitz/midi-js-soundfonts">https://github.com/gleitz/midi-js-soundfonts</a><br><br>
+Using <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API">HTML5 Web Audio API</a>... loads sounds from base64 MP3 blob, controls pitch with detune (which stretches the audio length, too) and volume with gain node.<br><br>
+<br><br>
+Variation of a previous design which plays just one sample and bends it. This one plays all note samples (there were 88 in each soundfont, so why not use them all?). Looks like attack time needs to be made consistent... and then there are all the different loop timings. Bad idea!<br><br>
+
+</body></html>

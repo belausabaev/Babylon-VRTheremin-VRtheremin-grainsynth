@@ -23,6 +23,22 @@
     <!-- p5.js  -->
     <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
 
+    <!-- tone.js -->
+    <script src="https://unpkg.com/tone@14.8.9/build/Tone.js"></script>
+
+    <!-- midi instruments -->
+    <script type="text/javascript" src="jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="midi_instruments/myfonts/pan_flute-mp3.js"></script>
+    <script type="text/javascript" src="midi_instruments/myfonts/acoustic_grand_piano-mp3.js"></script>
+    <script type="text/javascript" src="midi_instruments/myfonts/choir_aahs-mp3.js"></script>
+    <script type="text/javascript" src="midi_instruments/myfonts/orchestral_harp-mp3.js"></script>
+    <script type="text/javascript" src="midi_instruments/myfonts/pan_flute-mp3.js"></script>
+    <script type="text/javascript" src="midi_instruments/myfonts/shamisen-mp3.js"></script>
+    <script type="text/javascript" src="midi_instruments/myfonts/vibraphone-mp3.js"></script>
+    <script type="text/javascript" src="midi_instruments/myfonts/violin-mp3.js"></script>
+    <script type="text/javascript" src="midi_instruments/myfonts/electric_guitar_clean-mp3.js"></script>
+    <script type="text/javascript" src="midi_instruments/midi_instruments_theremin.js"></script>
+
     <style>
         html,
         body {
@@ -58,10 +74,12 @@
     <div id="video"></div>
     <canvas id="render-canvas"></canvas>
     <div id="graincanvasContainer"></div>
+    <div id="pitch">0 hz</div>
+    <div id="volume">0 %</div>
     <!-- grain synthesis algorithm by Jacob Johnson https://github.com/j-t-johnson/granular-machine -->
     <script src="grainsynth/grainmachine.js"></script>
     <!-- Our Babylon.js implementation. -->
-    <script src="scene_grains.js"></script>
+    <script src="scene_midi_instruments.js"></script>
 
     <!--granular machine input GUI-->
     <header>

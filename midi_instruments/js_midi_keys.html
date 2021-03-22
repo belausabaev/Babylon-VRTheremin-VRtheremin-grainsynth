@@ -1,0 +1,279 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>js keyboard</title>
+    <script src="jquery-3.2.1.min.js"></script>
+    <script src="soundfont-player.min.js"></script>
+
+<script> //create instrument
+pianopath = "myfonts_keyboard/acoustic_grand_piano-mp3.js";
+harppath = "myfonts_keyboard/orchestral_harp-ogg.js";
+violinpath = "myfonts_keyboard/violin-ogg.js";
+kalimbapath = "myfonts_keyboard/kalimba-ogg.js";
+ocarinapath = "myfonts_keyboard/ocarina-mp3.js";
+celestapath = "myfonts_keyboard/celesta-mp3.js";
+choiraahspath = "myfonts_keyboard/choir_aahs-mp3.js";
+churchorganpath = "myfonts_keyboard/church_organ-mp3.js";
+englishhornpath = "myfonts_keyboard/english_horn-mp3.js";
+fiddlepath = "myfonts_keyboard/fiddle-mp3.js";
+frenchhornpath = "myfonts_keyboard/french_horn-mp3.js";
+musicboxpath = "myfonts_keyboard/music_box-mp3.js";
+panflutepath = "myfonts_keyboard/pan_flute-mp3.js";
+recorderpath = "myfonts_keyboard/recorder-mp3.js";
+shakuhachipath = "myfonts_keyboard/shakuhachi-mp3.js";
+shamisenpath = "myfonts_keyboard/shamisen-mp3.js";
+shanaipath = "myfonts_keyboard/shanai-mp3.js";
+trumpetpath = "myfonts_keyboard/trumpet-mp3.js";
+vibraphonepath = "myfonts_keyboard/vibraphone-mp3.js";
+violapath = "myfonts_keyboard/viola-mp3.js";
+
+//
+ac = new AudioContext();
+myin_piano = Soundfont.instrument(ac, pianopath, {loop: false});
+myin_harp = Soundfont.instrument(ac, harppath, {loop: false});
+myin_violin = Soundfont.instrument(ac, violinpath, {loop: false});
+myin_vibraphone = Soundfont.instrument(ac, vibraphonepath, {loop: false});
+myin_shamisen = Soundfont.instrument(ac, shamisenpath, {loop: false});
+myin_panflute = Soundfont.instrument(ac, panflutepath, {loop: false});
+myin_choiraahs = Soundfont.instrument(ac, choiraahspath, {loop: false});
+
+myin = myin_piano;
+
+var instrument_switcher = {
+    "piano":myin_piano,
+    "harp":myin_harp,
+    "violin":myin_violin,
+    "vibraphone":myin_vibraphone,
+    "shamisen":myin_shamisen,
+    "panflute":myin_panflute,
+    "choiraahs":myin_choiraahs,
+};
+</script>
+
+<script> //radio instrument change when form is ticked
+document.addEventListener('DOMContentLoaded', function () {
+    var radval = $("form#radio_instrument>input[type='radio']").filter(':checked')[0].value;
+    myin = instrument_switcher[radval];
+});
+document.addEventListener('DOMContentLoaded', function () {
+    var rad = $("form#radio_instrument")[0];
+    var prev = rad;
+    for (var i = 0; i < rad.length; i++) {
+        rad[i].addEventListener('change', function() {
+            if (this !== prev) {
+                prev = this;
+            }
+            radval = $("form#radio_instrument>input[type='radio']").filter(':checked')[0].value;
+            console.log(radval);
+            myin = instrument_switcher[radval];
+        });
+    }
+});
+</script>
+
+<script> //keyboard to midi mappings. for dvorak.
+var keylist_keycode_dvorak = {
+59:47,
+81:48,
+74:49,
+75:50,
+88:51,
+65:52,
+79:53,
+69:54,
+85:55,
+73:56,
+222:57,
+188:58,
+190:59,
+80:60,
+89:61,
+49:62,
+50:63,
+51:64,
+52:65,
+53:66,
+54:67,
+55:68,
+56:69,
+57:70,
+48:71,
+70:72,
+71:73,
+67:74,
+82:75,
+76:76,
+68:77,
+72:78,
+84:79,
+78:80,
+83:81,
+66:82,
+77:83,
+87:84,
+86:85,
+90:86,
+};
+
+//and qwerty
+var keylist_keycode_qwerty = {
+90:47,
+88:48,
+67:49,
+86:50,
+66:51,
+65:52,
+83:53,
+68:54,
+70:55,
+71:56,
+81:57,
+87:58,
+69:59,
+82:60,
+84:61,
+49:62,
+50:63,
+51:64,
+52:65,
+53:66,
+54:67,
+55:68,
+56:69,
+57:70,
+48:71,
+89:72,
+85:73,
+73:74,
+79:75,
+80:76,
+72:77,
+74:78,
+75:79,
+76:80,
+59:81,
+78:82,
+77:83,
+188:84,
+190:85,
+191:86,
+};
+
+var keylist_keycode = keylist_keycode_qwerty;
+//dropdown instrument change when form is ticked
+var kb_switcher = {
+    "qwerty":keylist_keycode_qwerty,
+    "dvorak":keylist_keycode_dvorak,
+};
+document.addEventListener('DOMContentLoaded', function () {
+    var radvalkb = $("form#radio_keyboard>input[type='radio']").filter(':checked')[0].value;
+    keylist_keycode = kb_switcher[radvalkb];
+});
+document.addEventListener('DOMContentLoaded', function () {
+    var radkb = $("form#radio_keyboard")[0];
+    var prevkb = radkb;
+    for (var i = 0; i < radkb.length; i++) {
+        radkb[i].addEventListener('change', function() {
+            if (this !== prevkb) {
+                prevkb = this;
+            }
+            radvalkb = $("form#radio_keyboard>input[type='radio']").filter(':checked')[0].value;
+            console.log(radvalkb);
+            keylist_keycode = kb_switcher[radvalkb];
+        });
+    }
+});
+</script>
+
+<script>
+var notelist = {
+};
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    window.addEventListener('keydown', keydown, true);
+    window.addEventListener('keyup', keyup, true);
+});
+//track pressed keys
+var pressedkeys = {};
+function keydown(key)
+{
+    console.log(key);
+	//don't do anything if an input box is active
+	var escapetypes = ["text","textarea","search"];
+    var k;
+	if (escapetypes.indexOf(document.activeElement.type) === -1)
+	{
+		//if (key.charCode in keylist)
+        k = key.keyCode;
+		if (k in keylist_keycode && (pressedkeys[k] === undefined || pressedkeys[k] === false))
+        {
+            //console.log(keylist_keycode[key.keyCode]);
+            myin.then(function(piano) {
+                notelist[k] = piano.play( keylist_keycode[k] );
+            });
+            pressedkeys[k] = true;
+        }
+		else
+			return;
+	}
+	return;
+}
+function keyup(key)
+{
+    //console.log(key);
+	//don't do anything if an input box is active
+	var escapetypes = ["text","textarea","search"];
+    var k;
+	if (escapetypes.indexOf(document.activeElement.type) === -1)
+	{
+		//if (key.charCode in keylist)
+        k = key.keyCode;
+		if (k in keylist_keycode && notelist[k] !== undefined)
+        {
+            //console.log(keylist_keycode[key.keyCode]);
+            myin.then(function(piano) {
+                //piano.play(keylist_keycode[k]).stop(ac.currentTime);
+                notelist[k].stop();
+            });
+            //console.log("stop");
+            pressedkeys[k] = false;
+        }
+		else
+			return;
+	}
+	return;
+}
+</script>
+
+</head>
+<body>
+<h4>JavaScript Keyboard.</h4>Press keys to play. Takes a while to load the sounds.<br><br>
+<br><br>
+<form id="radio_instrument">
+    <u>Instrument</u><br>
+    <input type="radio" name="instrument" value="piano" checked>Piano<br>
+    <input type="radio" name="instrument" value="harp">Harp<br>
+    <input type="radio" name="instrument" value="violin">Violin<br>
+    <input type="radio" name="instrument" value="vibraphone">Vibraphone<br>
+    <input type="radio" name="instrument" value="shamisen">Shamisen<br>
+    <input type="radio" name="instrument" value="panflute">Pan Flute<br>
+    <input type="radio" name="instrument" value="choiraahs">Choir Aahs<br>
+</form>
+
+<form id="radio_keyboard">
+    <u>Keyboard</u><br>
+    <input type="radio" name="keyboard" value="qwerty" checked>qwerty<br>
+    <input type="radio" name="keyboard" value="dvorak">dvorak<br>
+</form>
+<br><br>
+<u><h4>Credits</h4></u>
+soundfont player from <a href="https://github.com/danigb/soundfont-player">https://github.com/danigb/soundfont-player</a><br><br>
+javascript-converted soundfonts from <a href="https://github.com/gleitz/midi-js-soundfonts">https://github.com/gleitz/midi-js-soundfonts</a><br><br>
+keyboard layout from <a href="https://zulko.github.io/blog/2014/03/29/soundstretching-and-pitch-shifting-in-python/">https://zulko.github.io/blog/2014/03/29/soundstretching-and-pitch-shifting-in-python/</a><br><br>
+<br><br>
+Save page to modify. All the JS is there.<br><br>
+
+</body>
+</html>

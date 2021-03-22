@@ -1,0 +1,23 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>js theremin (sinewave, horizontal)</title>
+    <link rel=stylesheet href="theremin.css">
+    <script type="text/javascript" src="jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="theremin_sine.js"></script>
+</head>
+
+<body>
+<h4>WebAudio Theremin</h4>Click to play, move mouse to change pitch/volume. Pitch is horizontal, volume is vertical.<br><br>
+You can also hover over and press a key.<br><br>
+Behavior is different depending on browser. Try in Chrome.<br><br>
+<div id="cents">0 cents from A0</div>
+<div id="pitch">0 hz</div>
+<div id="volume">0 %</div>
+<br>
+<canvas id="theremin"></canvas>
+<br><br>
+<h4><u>About</u></h4>
+This concept can also be done through any MIDI sythesizer that can handle real-time pitch-bends and can set a wide pitch bend range (this setting is specific to each device).<br><br>
+Works better with generated sound than with samples.<br><br>
+
+</body></html>

@@ -1,0 +1,15 @@
+canvas#theremin
+{
+	position: relative;
+	outline: 2px solid;
+	outline-offset: 0px;
+	min-height: 50vh;
+	max-height: 80vh;
+	height: 60vh;
+	width: 95vw;
+	margin: auto;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	opacity: 0.5;
+}
