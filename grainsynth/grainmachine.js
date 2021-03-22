@@ -14,7 +14,7 @@ var att = 0.1; // default
 var dec = 0.1; //default
 var audioBuffer;
 
-var ctx, master, cVerb, irBuff
+var ctx, grainGain, cVerb, irBuff
 
 var rate, frate;
 
@@ -29,7 +29,8 @@ function init(audioCtx) {
     ctx = audioCtx;
 
     //master volume
-    master = ctx.createGain();
+ 
+    grainGain = ctx.createGain();
     //master.connect(ctx.destination);
    
 
@@ -69,11 +70,11 @@ function grains(pos, pitch) {
     contour.gain.linearRampToValueAtTime(0, ctx.currentTime + (att + dec));
 
     contour.connect(verbLevel);
-    contour.connect(master);
+    contour.connect(grainGain);
 
     verbLevel.gain.setValueAtTime(0.6, ctx.currentTime);
 
-    verbLevel.connect(master);
+    verbLevel.connect(grainGain);
 
     var gRate = (5.5 * (0.8 - (pitch / window.innerHeight))) + 0.5;
 
