@@ -22,21 +22,22 @@ var posX, posY;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-// "loadbang"
-window.onload = function () {
+//initialize grain synth
+function init(audioCtx) {
 
     //web audio setup
-    ctx = new (AudioContext || webkitAudioContext);
+    ctx = audioCtx;
 
     //master volume
     master = ctx.createGain();
-    master.connect(ctx.destination);
+    //master.connect(ctx.destination);
+   
 
     //create convolution verb
     cVerb = ctx.createConvolver();
     cVerb.connect(ctx.destination);
 
-    ctx.suspend();
+  
 
     //get IR
     irBuff;
@@ -52,9 +53,6 @@ window.onload = function () {
 
     getIr.send();
 
-
-    // //load buffer with page
-     bufferSwitch(0);
 
 }
 
@@ -142,6 +140,3 @@ function rand(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-
-
- 

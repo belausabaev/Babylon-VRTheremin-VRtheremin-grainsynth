@@ -81,6 +81,59 @@ const createScene = async function () {
         minConfidence: 0.7,
     };
 
+    // ---------- Audio Context ------------------//
+
+    //create audio context for all theremin voices
+    ctx = new (AudioContext || webkitAudioContext);
+    ctx.suspend();
+
+    //initialize audio context for grainsynth
+
+    init(ctx);
+    grainSample = 0; // 0 = synthetic sound, 2 = guitar sound, 3 = piano with echo sound
+    bufferSwitch(grainSample);
+    grainPlaying = false;
+
+    // initialize default theremin sound
+    oscillator = null;
+    gainNode = ctx.createGain();
+    gainNode.gain.value = 0.5;
+    var soundPlaying = false;
+
+
+    // Calculate frequency relative to PitchAntenna
+    var calculateFrequency = function (distance) {
+        var minFrequency = 131; // C3
+        maxFrequency = 494; // B4
+
+        var pitchSensitivity = 10;
+
+        return Math.exp(-distance * pitchSensitivity) * (maxFrequency - minFrequency) + minFrequency;
+    };
+
+    var calculateGain = function (distance) {
+        var minGain = 0;
+        maxGain = 1;
+
+        var gainSensitivity = 1;
+
+        return Math.exp(-distance * gainSensitivity) * (maxGain - minGain) + minGain;
+    };
+
+    var setFrequency = () => {
+        //pitchDistance = BABYLON.Vector3.DistanceSquared(sphereRight.position, pitchAntennaPosition);
+        pitchDistance = BABYLON.Vector3.DistanceSquared(new BABYLON.Vector3(rightPosX, rightPosY, 0), pitchAntennaPosition);
+        oscillator.frequency.setTargetAtTime(calculateFrequency(pitchDistance), ctx.currentTime, 0.01);
+    };
+
+    var setGain = () => {
+        //var volumeDistance = BABYLON.Vector3.DistanceSquared(sphereLeft.position, volumeAntennaPosition);
+        var volumeDistance = BABYLON.Vector3.DistanceSquared(new BABYLON.Vector3(leftPosX, leftPosY, 0), volumeAntennaPosition);
+        gainNode.gain.setTargetAtTime(1 - calculateGain(volumeDistance), ctx.currentTime, 0.01);
+    };
+
+    // ---------- Position Tracking ------------------//
+
     poseNet = ml5.poseNet(video, options, modelReady);
 
     function modelReady() {
@@ -133,6 +186,11 @@ const createScene = async function () {
             posY = map(poses.leftWrist.y, 0, video.height, 0, window.innerHeight);
             posX = map(poses.rightWrist.x, 0, video.width, 0, window.innerWidth);
             grains(posX, posY);
+
+            if (soundPlaying) {
+                setFrequency();
+                setGain();
+            }
         }
     });
 
@@ -157,17 +215,18 @@ const createScene = async function () {
     });
 
     btn.on('click', () => {
-        console.log(ctx.state);
+        
         if (ctx.state === 'running') {
-            ctx.suspend().then(function () {});
+            ctx.suspend().then(function () { });
         } else if (ctx.state === 'suspended') {
-            ctx.resume().then(function () {});
+            ctx.resume().then(function () { });
         }
     });
 
     const SourceInput = pane.addInput(PARAMS, 'source', { options: { Elements: 0, Guitar: 1, Piano: 2 } });
     SourceInput.on('change', function (ev) {
-        bufferSwitch(ev.value);
+        grainSample = ev.value;
+        bufferSwitch(grainSample);
     });
 
     const f = pane.addFolder({
@@ -178,17 +237,68 @@ const createScene = async function () {
     const attackInput = f.addInput(PARAMS, 'attack', { min: 0.01, max: 1, step: 0.01 });
     attackInput.on('change', function (ev) {
         // change something
+        //console.log(ev.value.toFixed(2));
+        att = parseFloat(ev.value.toFixed(2)); // parse incoming value for grainmachine.js
     });
 
     const decayInput = f.addInput(PARAMS, 'decay', { min: 0.01, max: 1, step: 0.01 });
     decayInput.on('change', function (ev) {
         // change something
+        dec = parseFloat(ev.value.toFixed(2)); // parse incoming value for grainmachine.js
     });
 
     const densityInput = f.addInput(PARAMS, 'density', { min: 10, max: 500, step: 5 });
     densityInput.on('change', function (ev) {
         // change something
+        rate = parseFloat(ev.value.toFixed());
     });
+
+    pane.addSeparator();
+
+    const instr = pane.addFolder({
+        title: 'INSTRUMENTS',
+    });
+
+    const btnTheremin = instr.addButton({ title: 'THEREMIN ► | ◼︎' });
+
+
+    btnTheremin.on('click', () => {
+        if (ctx.state === 'running') {
+            if (oscillator) {
+                soundPlaying = false;
+                oscillator.stop(ctx.currentTime);
+                oscillator.disconnect();
+                oscillator = null;
+            }
+            else {
+                soundPlaying = true;
+                oscillator = ctx.createOscillator();
+                oscillator.connect(gainNode);
+                gainNode.connect(ctx.destination);
+                oscillator.start(ctx.currentTime);
+            }
+        }
+    });
+
+    const btnGrainsynth = instr.addButton({ title: 'GRAINSYNTH ► | ◼︎' });
+
+
+    btnGrainsynth.on('click', () => {
+        if (ctx.state === 'running'){
+        
+        if(grainPlaying) {
+            master.disconnect();
+            grainPlaying = false;
+        }
+        else {
+            master = ctx.createGain();
+            master.connect(ctx.destination);
+            bufferSwitch(grainSample);
+            grainPlaying = true;
+        }
+    }
+    });
+
 
     return scene;
 };
