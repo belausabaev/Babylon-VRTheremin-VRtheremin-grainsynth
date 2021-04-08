@@ -194,7 +194,7 @@ const createScene = async function () {
         }
     });
 
-    // GUI for grain params
+       // GUI for grain params
     // Documentation: https://cocopon.github.io/tweakpane/input.html
 
     const PARAMS = {
@@ -203,13 +203,21 @@ const createScene = async function () {
         decay: 0.1,
         density: 35,
     };
+ 
 
     const pane = new Tweakpane({
+        title: 'VIRTUAL THEREMIN SOUNDS',
+        expanded: true,
+    });
+
+    pane.addSeparator();
+
+    const gs = pane.addFolder({
         title: 'THEREMIN GRANULAR SYNTHESIS',
         expanded: true,
     });
 
-    const btn = pane.addButton({
+    const btn = gs.addButton({
         title: '► | ◼︎',
         label: 'sound',
     });
@@ -218,8 +226,7 @@ const createScene = async function () {
         console.log(ctx.state);
         if (ctx.state === 'running') {
             console.log(ctx.state);
-            ctx.suspend().then(function () {
-                console.log(ctx.state);
+            if (oscillator) {
                 if (grainPlaying) {
                     grainGain.disconnect();
                     grainPlaying = false;
@@ -230,7 +237,22 @@ const createScene = async function () {
                     bufferSwitch(grainSample);
                     grainPlaying = true;
                 }
-            });
+            }
+            else {
+                ctx.suspend().then(function () {
+                    console.log(ctx.state);
+                    if (grainPlaying) {
+                        grainGain.disconnect();
+                        grainPlaying = false;
+                    }
+                    else {
+                        grainGain = ctx.createGain();
+                        grainGain.connect(ctx.destination);
+                        bufferSwitch(grainSample);
+                        grainPlaying = true;
+                    }
+                });
+            }
         } else if (ctx.state === 'suspended') {
             console.log(ctx.state);
             ctx.resume().then(function () {
@@ -247,13 +269,13 @@ const createScene = async function () {
     });
 
 
-    const SourceInput = pane.addInput(PARAMS, 'source', { options: { Elements: 0, Guitar: 1, Piano: 2 } });
+    const SourceInput = gs.addInput(PARAMS, 'source', { options: { Elements: 0, Guitar: 1, Piano: 2 } });
     SourceInput.on('change', function (ev) {
         grainSample = ev.value;
         bufferSwitch(grainSample);
     });
 
-    const f = pane.addFolder({
+    const f = gs.addFolder({
         title: 'GRAIN SETTINGS',
         expanded: true,
     });
@@ -285,16 +307,27 @@ const createScene = async function () {
 
     const btnTheremin = instr.addButton({ title: 'THEREMIN ► | ◼︎' });
 
+    //const btnInstr = instr.addButton({ title: ' PIANO ► | ◼︎' });
 
     btnTheremin.on('click', () => {
         console.log(ctx.state);
         if (ctx.state === 'running') {  // add theremin voice to audio
             console.log(ctx.state);
             if (oscillator) {
+                if(grainPlaying){
                 soundPlaying = false;
                 oscillator.stop(ctx.currentTime);
                 oscillator.disconnect();
                 oscillator = null;
+                }
+                else {
+                    ctx.suspend().then(function () { // if no other voice is playing stop the context altogether
+                        soundPlaying = false;
+                        oscillator.stop(ctx.currentTime);
+                        oscillator.disconnect();
+                        oscillator = null;
+                    });
+                }
             }
             else {
                 soundPlaying = true;
@@ -304,46 +337,17 @@ const createScene = async function () {
                 oscillator.start(ctx.currentTime);
             }
         }
-        // else if (ctx.state === 'suspended') { // start audio with theremin voice
-        //     console.log(ctx.state);
-        //     ctx.resume().then(function () {
-        //         console.log(ctx.state);
-        //         if (oscillator) {
-        //             soundPlaying = false;
-        //             oscillator.stop(ctx.currentTime);
-        //             oscillator.disconnect();
-        //             oscillator = null;
-        //         }
-        //         else {
-        //             soundPlaying = true;
-        //             oscillator = ctx.createOscillator();
-        //             oscillator.connect(gainNode);
-        //             gainNode.connect(ctx.destination);
-        //             oscillator.start(ctx.currentTime);
-        //         }
-        //     })
-       //    }
+        else if (ctx.state === 'suspended') { // start audio with theremin voice
+            console.log(ctx.state);
+            ctx.resume().then(function () {
+                soundPlaying = true;
+                oscillator = ctx.createOscillator();
+                oscillator.connect(gainNode);
+                gainNode.connect(ctx.destination);
+                oscillator.start(ctx.currentTime);
+            });
+        }
     });
-
-    // const btnGrainsynth = instr.addButton({ title: 'GRAINSYNTH ► | ◼︎' });
-
-
-    // btnGrainsynth.on('click', () => {
-    //     if (ctx.state === 'running'){
-
-    //     if(grainPlaying) {
-    //         master.disconnect();
-    //         grainPlaying = false;
-    //     }
-    //     else {
-    //         master = ctx.createGain();
-    //         master.connect(ctx.destination);
-    //         bufferSwitch(grainSample);
-    //         grainPlaying = true;
-    //     }
-    // }
-    // });
-
 
     return scene;
 };
