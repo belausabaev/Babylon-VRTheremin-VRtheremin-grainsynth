@@ -84,7 +84,7 @@ const createScene = async function () {
     // ---------- Audio Context ------------------//
 
     //create audio context for all theremin voices
-    ctx = new (AudioContext || webkitAudioContext);
+    ctx = new (AudioContext || webkitAudioContext)();
     ctx.suspend();
 
     //initialize audio context for grainsynth
@@ -99,7 +99,6 @@ const createScene = async function () {
     gainNode = ctx.createGain();
     gainNode.gain.value = 0.5;
     var soundPlaying = false;
-
 
     // Calculate frequency relative to PitchAntenna
     var calculateFrequency = function (distance) {
@@ -194,30 +193,22 @@ const createScene = async function () {
         }
     });
 
-       // GUI for grain params
+    // GUI for grain params
     // Documentation: https://cocopon.github.io/tweakpane/input.html
 
     const PARAMS = {
         source: 0,
         attack: 0.1,
-        decay: 0.1,
+        decay: 0.3,
         density: 35,
     };
- 
 
     const pane = new Tweakpane({
         title: 'VIRTUAL THEREMIN SOUNDS',
         expanded: true,
     });
 
-    pane.addSeparator();
-
-    const gs = pane.addFolder({
-        title: 'THEREMIN GRANULAR SYNTHESIS',
-        expanded: true,
-    });
-
-    const btn = gs.addButton({
+    const btn = pane.addButton({
         title: '► | ◼︎',
         label: 'sound',
     });
@@ -230,22 +221,19 @@ const createScene = async function () {
                 if (grainPlaying) {
                     grainGain.disconnect();
                     grainPlaying = false;
-                }
-                else {
+                } else {
                     grainGain = ctx.createGain();
                     grainGain.connect(ctx.destination);
                     bufferSwitch(grainSample);
                     grainPlaying = true;
                 }
-            }
-            else {
+            } else {
                 ctx.suspend().then(function () {
                     console.log(ctx.state);
                     if (grainPlaying) {
                         grainGain.disconnect();
                         grainPlaying = false;
-                    }
-                    else {
+                    } else {
                         grainGain = ctx.createGain();
                         grainGain.connect(ctx.destination);
                         bufferSwitch(grainSample);
@@ -262,12 +250,16 @@ const createScene = async function () {
                 grainGain.connect(ctx.destination);
                 bufferSwitch(grainSample);
                 grainPlaying = true;
-
-
             });
         }
     });
 
+    pane.addSeparator();
+
+    const gs = pane.addFolder({
+        title: 'THEREMIN GRANULAR SYNTHESIS',
+        expanded: true,
+    });
 
     const SourceInput = gs.addInput(PARAMS, 'source', { options: { Elements: 0, Guitar: 1, Piano: 2 } });
     SourceInput.on('change', function (ev) {
@@ -311,33 +303,33 @@ const createScene = async function () {
 
     btnTheremin.on('click', () => {
         console.log(ctx.state);
-        if (ctx.state === 'running') {  // add theremin voice to audio
+        if (ctx.state === 'running') {
+            // add theremin voice to audio
             console.log(ctx.state);
             if (oscillator) {
-                if(grainPlaying){
-                soundPlaying = false;
-                oscillator.stop(ctx.currentTime);
-                oscillator.disconnect();
-                oscillator = null;
-                }
-                else {
-                    ctx.suspend().then(function () { // if no other voice is playing stop the context altogether
+                if (grainPlaying) {
+                    soundPlaying = false;
+                    oscillator.stop(ctx.currentTime);
+                    oscillator.disconnect();
+                    oscillator = null;
+                } else {
+                    ctx.suspend().then(function () {
+                        // if no other voice is playing stop the context altogether
                         soundPlaying = false;
                         oscillator.stop(ctx.currentTime);
                         oscillator.disconnect();
                         oscillator = null;
                     });
                 }
-            }
-            else {
+            } else {
                 soundPlaying = true;
                 oscillator = ctx.createOscillator();
                 oscillator.connect(gainNode);
                 gainNode.connect(ctx.destination);
                 oscillator.start(ctx.currentTime);
             }
-        }
-        else if (ctx.state === 'suspended') { // start audio with theremin voice
+        } else if (ctx.state === 'suspended') {
+            // start audio with theremin voice
             console.log(ctx.state);
             ctx.resume().then(function () {
                 soundPlaying = true;

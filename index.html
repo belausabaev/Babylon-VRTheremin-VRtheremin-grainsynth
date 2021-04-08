@@ -26,12 +26,44 @@
     <!-- p5.js  -->
     <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
 
+    <!-- font-family -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400&family=Roboto:wght@400&display=swap');
+    </style>
+
     <!-- css for grain params html gui -->
     <link rel="stylesheet" href="styles.css">
 
 </head>
 
 <body>
+    <!-- show hide introduction -->
+    <script>
+        function hideIntro() {
+            let introductionText = document.getElementById('introduction');
+            introductionText.style.display = 'none';
+        }
+    </script>
+
+
+    <div style="object-position:center">
+        <div id="introduction">
+            Hi there!
+            <br><br>This is a virtual THEREMIN application.
+            <br><br>The THEREMIN responds to your hand movements, so make sure to allow access to
+            your webcam. To be able to hear anything, you will have to turn on the sound with the '►
+            | ◼︎'
+            button at the top right.
+            <br><br>Move your left hand up and done to change the volume. Move your right hand
+            through space to change the pitch.
+            <br><br>Try out different sources and play around with the grain settings to fully
+            explore the possible output.
+            <br><br>For a simple THEREMIN sound, click on the 'THEREMIN ► | ◼︎' button.
+            <br><br>
+            <button type="button" class="btn" onclick="hideIntro()">OK, GOT IT!</button>
+        </div>
+    </div>
+
     <div id="video"></div>
     <canvas id="render-canvas"></canvas>
     <div id="graincanvasContainer"></div>
