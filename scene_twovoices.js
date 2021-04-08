@@ -39,19 +39,19 @@ const createScene = async function () {
         volumeAntennaPosition = scene.getMeshByName('VolumeAntenna').position;
     });
 
-    // ------- FILM CLIP ON PLANE -------
-    // var videoPlane = BABYLON.MeshBuilder.CreatePlane('plane', { width: 8, height: 4.5 }, scene);
-    // videoPlane.position = new BABYLON.Vector3(0, 1, 3);
+    //------- FILM CLIP ON PLANE -------
+    var videoPlane = BABYLON.MeshBuilder.CreatePlane('plane', { width: 5, height: 3.5 }, scene);
+    videoPlane.position = new BABYLON.Vector3(0, 1, 3);
 
-    // var videoMaterial = new BABYLON.StandardMaterial('texture1', scene);
+    var videoMaterial = new BABYLON.StandardMaterial('texture1', scene);
 
-    // var videoTexture = new BABYLON.VideoTexture('video', './data/video/farmersspring.mp4', scene, true);
-    // videoTexture.video.muted = true;
-    // videoMaterial.diffuseTexture = videoTexture;
-    // videoMaterial.emissiveColor = new BABYLON.Color3.White();
-    // videoPlane.material = videoMaterial;
+    var videoTexture = new BABYLON.VideoTexture('video', './data/video/farmersspring.mp4', scene, true);
+    videoTexture.video.muted = true;
+    videoMaterial.diffuseTexture = videoTexture;
+    videoMaterial.emissiveColor = new BABYLON.Color3.White();
+    videoPlane.material = videoMaterial;
 
-    // videoTexture.video.play();
+    videoTexture.video.play();
 
     // ------- WEBCAM VIDEO + ML POSE RECOGNITION -------
 
