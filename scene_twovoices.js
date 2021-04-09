@@ -198,7 +198,7 @@ const createScene = async function () {
 
     const PARAMS = {
         source: 0,
-        attack: 0.1,
+        attack: 0.3,
         decay: 0.3,
         density: 35,
     };
@@ -208,7 +208,14 @@ const createScene = async function () {
         expanded: true,
     });
 
-    const btn = pane.addButton({
+    pane.addSeparator();
+
+    const gs = pane.addFolder({
+        title: 'THEREMIN GRANULAR SYNTHESIS',
+        expanded: true,
+    });
+
+    const btn = gs.addButton({
         title: '► | ◼︎',
         label: 'sound',
     });
@@ -254,13 +261,6 @@ const createScene = async function () {
         }
     });
 
-    pane.addSeparator();
-
-    const gs = pane.addFolder({
-        title: 'THEREMIN GRANULAR SYNTHESIS',
-        expanded: true,
-    });
-
     const SourceInput = gs.addInput(PARAMS, 'source', { options: { Elements: 0, Guitar: 1, Piano: 2 } });
     SourceInput.on('change', function (ev) {
         grainSample = ev.value;
@@ -294,10 +294,13 @@ const createScene = async function () {
     pane.addSeparator();
 
     const instr = pane.addFolder({
-        title: 'VOICES',
+        title: 'THEREMIN CLASSIC',
     });
 
-    const btnTheremin = instr.addButton({ title: 'THEREMIN ► | ◼︎' });
+    const btnTheremin = instr.addButton({
+        title: '► | ◼︎',
+        label: 'sound',
+    });
 
     //const btnInstr = instr.addButton({ title: ' PIANO ► | ◼︎' });
 
@@ -339,6 +342,12 @@ const createScene = async function () {
                 oscillator.start(ctx.currentTime);
             });
         }
+    });
+
+    pane.addSeparator();
+    const showInstructions = pane.addButton({ title: 'show instructions' });
+    showInstructions.on('click', () => {
+        hideIntro();
     });
 
     return scene;
