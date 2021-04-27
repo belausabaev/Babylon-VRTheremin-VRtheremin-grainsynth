@@ -45,7 +45,7 @@ const createScene = async function () {
 
     var videoMaterial = new BABYLON.StandardMaterial('texture1', scene);
 
-    var videoTexture = new BABYLON.VideoTexture('video', './data/video/ThereminSeq.mp4', scene, true);
+    var videoTexture = new BABYLON.VideoTexture('video', './data/video/farmersspring.mp4', scene, true);
     videoTexture.video.muted = true;
     videoMaterial.diffuseTexture = videoTexture;
     videoMaterial.emissiveColor = new BABYLON.Color3.White();
