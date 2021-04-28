@@ -278,13 +278,13 @@ const createScene = async function () {
         //console.log(ev.value.toFixed(2));
         att = parseFloat(ev.value.toFixed(2)); // parse incoming value for grainmachine.js
     });
-
+/*
     const decayInput = f.addInput(PARAMS, 'decay', { min: 0.01, max: 1, step: 0.01 });
     decayInput.on('change', function (ev) {
         // change something
         dec = parseFloat(ev.value.toFixed(2)); // parse incoming value for grainmachine.js
     });
-
+*/
     const densityInput = f.addInput(PARAMS, 'density', { min: 10, max: 500, step: 5 });
     densityInput.on('change', function (ev) {
         // change something
