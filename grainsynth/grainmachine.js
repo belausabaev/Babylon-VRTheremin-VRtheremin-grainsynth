@@ -101,6 +101,8 @@ function bufferSwitch(input) {
         getSound.open('get', 'grainsynth/samples/audio/guitar.wav', true);
     } else if (input == 2) {
         getSound.open('get', 'grainsynth/samples/audio/piano+spaceecho.mp3', true);
+    } else if (input == 3) {
+            getSound.open('get', 'grainsynth/samples/audio/tuningorchestra.mp3', true);
     } else {
         //nothing
     }

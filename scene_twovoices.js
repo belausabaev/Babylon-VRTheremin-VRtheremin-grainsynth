@@ -261,7 +261,7 @@ const createScene = async function () {
         }
     });
 
-    const SourceInput = gs.addInput(PARAMS, 'source', { options: { Elements: 0, Guitar: 1, Piano: 2 } });
+    const SourceInput = gs.addInput(PARAMS, 'source', { options: { Synthetic_Sound: 0, Guitar: 1, Piano: 2 , Orchestra_Tuning: 3} });
     SourceInput.on('change', function (ev) {
         grainSample = ev.value;
         bufferSwitch(grainSample);
