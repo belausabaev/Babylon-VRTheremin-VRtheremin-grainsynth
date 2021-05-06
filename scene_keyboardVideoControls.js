@@ -78,37 +78,37 @@ const createScene = async function () {
     groundMat.emissiveColor = new BABYLON.Color3.Gray();
     pbarBg.material = groundMat;
 
-        	//Create a custom mesh  
-	var customMesh = new BABYLON.Mesh("custom", scene);
+    //     	//Create a custom mesh  
+	// var customMesh = new BABYLON.Mesh("custom", scene);
 	
-	//Set arrays for positions and indices
-	var positions = [-5, 2, -3, -7, -2, -3, -3, -2, -3, 5, 2, 3, 7, -2, 3, 3, -2, 3];
-	var indices = [0, 1, 2, 3, 4, 5];	
-	var colors = [1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0,  0, 1, 0, 1];
+	// //Set arrays for positions and indices
+	// var positions = [-5, 2, -3, -7, -2, -3, -3, -2, -3, 5, 2, 3, 7, -2, 3, 3, -2, 3];
+	// var indices = [0, 1, 2, 3, 4, 5];	
+	// var colors = [1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0,  0, 1, 0, 1];
 	
-	//Empty array to contain calculated values
-	var normals = [];
+	// //Empty array to contain calculated values
+	// var normals = [];
 	
-	var vertexData = new BABYLON.VertexData();
-	BABYLON.VertexData.ComputeNormals(positions, indices, normals);
+	// var vertexData = new BABYLON.VertexData();
+	// BABYLON.VertexData.ComputeNormals(positions, indices, normals);
 
-	//Assign positions, indices and normals to vertexData
-	vertexData.positions = positions;
-	vertexData.indices = indices;
-	vertexData.normals = normals;
-	vertexData.colors = colors;
+	// //Assign positions, indices and normals to vertexData
+	// vertexData.positions = positions;
+	// vertexData.indices = indices;
+	// vertexData.normals = normals;
+	// vertexData.colors = colors;
 
-	//Apply vertexData to custom mesh
-	vertexData.applyToMesh(customMesh);
+	// //Apply vertexData to custom mesh
+	// vertexData.applyToMesh(customMesh);
 
     	
 
 
-    customMesh.position  = new BABYLON.Vector3(-2.85,3,3);
-    customMesh.rotation.z = Math.PI;
-    customMesh.scaling.x = 0.1;
-    customMesh.scaling.y = 0.1;
-    customMesh.scaling.z = 0.1;
+    // customMesh.position  = new BABYLON.Vector3(-2.85,3,3);
+    // customMesh.rotation.z = Math.PI;
+    // customMesh.scaling.x = 0.1;
+    // customMesh.scaling.y = 0.1;
+    // customMesh.scaling.z = 0.1;
 
     var showIn = function (value, start, end) {
         if (scene.getMeshByName("pbarIn")) {
@@ -119,7 +119,7 @@ const createScene = async function () {
             var pbar = BABYLON.MeshBuilder.CreatePlane('pbarIn', { width: posY, height: 0.15 }, scene);
             var xVal = (-videoPlaneWidth / 2) + (posY / 2)
             pbar.position = new BABYLON.Vector3(xVal, 3, 2.95);
-            customMesh.position  = new BABYLON.Vector3(xVal, 3, 3);
+            //customMesh.position  = new BABYLON.Vector3(xVal, 3, 3);
             console.log("value: " + value + " posY: " + posY + " end: " + end + " vid plane width: " + videoPlaneWidth+ " xVal: "+xVal);
             //pbar.rotation.y = Math.PI;
             const groundMat = new BABYLON.StandardMaterial("groundMat");
