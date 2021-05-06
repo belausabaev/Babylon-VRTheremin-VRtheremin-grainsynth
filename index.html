@@ -55,7 +55,7 @@
     </script>
 
 
-    <div style="object-position:center">
+    <!-- <div style="object-position:center">
         <div id="introduction">
             Hi there!
             <br><br>This is a virtual THEREMIN application.
@@ -77,21 +77,22 @@
             <br><br>
             <button type="button" class="btn" onclick="hideIntro()">OK, GOT IT!</button>
         </div>
-    </div>
+    </div> -->
 
     <div id="video"></div>
+    
     <canvas id="render-canvas"></canvas>
     <div id="graincanvasContainer"></div>
     <!-- grain synthesis algorithm by Jacob Johnson https://github.com/j-t-johnson/granular-machine -->
     <script src="grainsynth/grainmachine.js"></script>
     <!-- Our Babylon.js implementation. -->
-    <script src="scene_twovoices.js"></script>
+    <script src="scene_keyboardVideoControls.js"></script>
 
     <!--granular machine input GUI-->
     <header>
         <div class="wrapper">
             <div id="container">
-                <h1>granular machine</h1>
+                <h1></h1>
             </div>
         </div>
     </header>
