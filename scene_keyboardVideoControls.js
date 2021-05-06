@@ -59,7 +59,7 @@ const createScene = async function () {
 
     var videoMaterial = new BABYLON.StandardMaterial('texture1', scene);
 
-    var videoTexture = new BABYLON.VideoTexture('video', './data/video/farmersspring.mp4', scene, true);
+    var videoTexture = new BABYLON.VideoTexture('video', './data/video/farmersspring25fpsPAL.mp4', scene, true);
     videoTexture.video.type = "video/mp4";
     videoTexture.video.muted = true;
     //videoTexture.video.controls = true; 
@@ -119,7 +119,7 @@ const createScene = async function () {
             var pbar = BABYLON.MeshBuilder.CreatePlane('pbarIn', { width: posY, height: 0.15 }, scene);
             var xVal = (-videoPlaneWidth / 2) + (posY / 2)
             pbar.position = new BABYLON.Vector3(xVal, 3, 2.95);
-            //customMesh.position  = new BABYLON.Vector3(xVal, 3, 3);
+            customMesh.position  = new BABYLON.Vector3(xVal, 3, 3);
             console.log("value: " + value + " posY: " + posY + " end: " + end + " vid plane width: " + videoPlaneWidth+ " xVal: "+xVal);
             //pbar.rotation.y = Math.PI;
             const groundMat = new BABYLON.StandardMaterial("groundMat");
@@ -574,7 +574,7 @@ const createScene = async function () {
             if (loop) {
                 console.log("start: " + start + " end : " + end);
                 videoTexture.video.currentTime = start;
-                playVideo();
+                //playVideo();
                 return;
             }
             videoTexture.video.pause();
@@ -785,7 +785,7 @@ const createScene = async function () {
                 controlsText.text = "Video Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop:l\n Reset marks: X";
                 //playVideo();
                 //setInterval(()=>checkEnd(),500);
-                logControls();
+                //logControls();
                 if (outset || inset) {
                     playBetween(start, end);
                     timerID = setInterval(() => checkMarks(start, end), 500);
@@ -804,7 +804,7 @@ const createScene = async function () {
                 controlsText.color = "red";
                 controlsText.text = "Video Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop: l\nReset marks: X";
                 pauseVideo();
-                logControls();
+                //logControls();
 
             }
             if (dsm.getDeviceSource(BABYLON.DeviceType.Keyboard).getInput(88) == 1) { // reset marks
@@ -819,9 +819,13 @@ const createScene = async function () {
                 start = 0;
                 end = videoTexture.video.duration;
                 clearInterval(timerID);
-                scene.getMeshByName("pbarIn").dispose();
-                scene.getMeshByName("pbarOut").dispose();
-                logControls();
+                if(scene.getMeshByName("pbarIn")){
+                    scene.getMeshByName("pbarIn").dispose();
+                }
+                if(scene.getMeshByName("pbarOut")){
+                    scene.getMeshByName("pbarOut").dispose();
+                }
+                //logControls();
 
             }
             if (dsm.getDeviceSource(BABYLON.DeviceType.Keyboard).getInput(66) == 1) { // b = backwards <<
@@ -829,7 +833,7 @@ const createScene = async function () {
                 controlsText.color = "red";
                 controlsText.text = "Video Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop: l\nReset marks: X";
                 frameBackward();
-                logControls();
+                //logControls();
 
             }
             else if (dsm.getDeviceSource(BABYLON.DeviceType.Keyboard).getInput(70) == 1) { // f  = forwards >>
@@ -837,7 +841,7 @@ const createScene = async function () {
                 controlsText.color = "red";
                 controlsText.text = "Video Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop: l\nReset marks: X";
                 frameForward();
-                logControls();
+                //logControls();
             }
             else if (dsm.getDeviceSource(BABYLON.DeviceType.Keyboard).getInput(73) == 1) { // i = mark in
                 currentColor = new BABYLON.Color3(1, 0.5, 0.5);
@@ -847,7 +851,7 @@ const createScene = async function () {
                 start = videoTexture.video.currentTime;
                 inset = true;
                 showIn(start, 0, videoTexture.video.duration);
-                logControls();
+                //logControls();
 
 
             }
@@ -859,23 +863,23 @@ const createScene = async function () {
                 end = videoTexture.video.currentTime;
                 outset = true;
                 showOut(end, 0, videoTexture.video.duration);
-                logControls();
+                //logControls();
 
             }
             else if (dsm.getDeviceSource(BABYLON.DeviceType.Keyboard).getInput(76) == 1) { // l = loop selected frames / part of video 
                 currentColor = new BABYLON.Color3(1, 0.5, 0.5);
                 controlsText.color = "red";
                 controlsText.text = "Video Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop: l\nReset marks: X";
-                if (loop) {
+                if (loop == true) {
                     loop = false;
                 }
                 else { loop = true };
-                logControls();
+                //logControls();
 
             }
         }
 
-
+       
 
     });
 
