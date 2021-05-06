@@ -54,7 +54,7 @@ const createScene = async function () {
 
     var videoMaterial = new BABYLON.StandardMaterial('texture1', scene);
 
-    var videoTexture = new BABYLON.VideoTexture('video', './data/video/GenerallineThereminSeq.mp4', scene, true);
+    var videoTexture = new BABYLON.VideoTexture('video', './data/video/farmersspring.mp4', scene, true);
     videoTexture.video.type = "video/mp4";
     videoTexture.video.muted = true;
     //videoTexture.video.controls = true; 
@@ -493,7 +493,7 @@ const createScene = async function () {
     // Create and configure textblock with instructions
     const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
     const controlsText = new BABYLON.GUI.TextBlock();
-    controlsText.text = "No connection to pilot controls.";
+    controlsText.text = "Click any key on keyboard to show video controls";
     controlsText.color = "white";
     controlsText.fontStyle = "bold";
     controlsText.textVerticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
@@ -533,7 +533,7 @@ const createScene = async function () {
                 IN = "I";
                 OUT = "O";
                 controlsText.text = `Established link to ${BABYLON.DeviceType[device.deviceType]}\n`;
-                controlsText.text += `Pilot Controls:\nscroll 1 second: b|f\nPlay: ${shieldButton}\nPause: ${fireButton}\nmark IN: ${IN}\nmark OUT: ${OUT}\nloop: l\nReset marks: ${boostButton}`;
+                controlsText.text += `Video Controls:\nscroll 1 second: b|f\nPlay: ${shieldButton}\nPause: ${fireButton}\nmark IN: ${IN}\nmark OUT: ${OUT}\nloop: l\nReset marks: ${boostButton}`;
                 break;
 
         }
@@ -578,7 +578,7 @@ const createScene = async function () {
             if (dsm.getDeviceSource(BABYLON.DeviceType.Keyboard).getInput(80) == 1) { // play
                 currentColor = new BABYLON.Color3(1, 0.5, 0.5);
                 controlsText.color = "red";
-                controlsText.text = "Pilot Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop:l\n Reset marks: X";
+                controlsText.text = "Video Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop:l\n Reset marks: X";
                 //playVideo();
                 //setInterval(()=>checkEnd(),500);
                 logControls();
@@ -598,7 +598,7 @@ const createScene = async function () {
             if (dsm.getDeviceSource(BABYLON.DeviceType.Keyboard).getInput(32) == 1) { // space bar
                 currentColor = new BABYLON.Color3(1, 0.5, 0.5);
                 controlsText.color = "red";
-                controlsText.text = "Pilot Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop: l\nReset marks: X";
+                controlsText.text = "Video Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop: l\nReset marks: X";
                 pauseVideo();
                 logControls();
                 
@@ -608,7 +608,7 @@ const createScene = async function () {
                 color1 = new BABYLON.Color4(1.0, 0.8, 0.8, 1.0);
                 color2 = new BABYLON.Color4(1.0, 0.5, 0.5, 1.0);
                 controlsText.color = "red";
-                controlsText.text = "Pilot Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop: l\nReset marks: X";
+                controlsText.text = "Video Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop: l\nReset marks: X";
                 //stopVideo();
                 inset=false;
                 outset = false;
@@ -621,7 +621,7 @@ const createScene = async function () {
             if (dsm.getDeviceSource(BABYLON.DeviceType.Keyboard).getInput(66) == 1) { // b = backwards <<
                 currentColor = new BABYLON.Color3(1, 0.5, 0.5);
                 controlsText.color = "red";
-                controlsText.text = "Pilot Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop: l\nReset marks: X";
+                controlsText.text = "Video Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop: l\nReset marks: X";
                 frameBackward();
                 logControls();
                 
@@ -629,14 +629,14 @@ const createScene = async function () {
             else if (dsm.getDeviceSource(BABYLON.DeviceType.Keyboard).getInput(70) == 1) { // f  = forwards >>
                 currentColor = new BABYLON.Color3(1, 0.5, 0.5);
                 controlsText.color = "red";
-                controlsText.text = "Pilot Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop: l\nReset marks: X";
+                controlsText.text = "Video Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop: l\nReset marks: X";
                 frameForward();
                 logControls();
             }
             else if (dsm.getDeviceSource(BABYLON.DeviceType.Keyboard).getInput(73) == 1) { // i = mark in
                 currentColor = new BABYLON.Color3(1, 0.5, 0.5);
                 controlsText.color = "red";
-                controlsText.text = "Pilot Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop: l\nReset marks: X";
+                controlsText.text = "Video Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop: l\nReset marks: X";
                 pauseVideo();
                 start = videoTexture.video.currentTime;
                 inset = true;
@@ -647,7 +647,7 @@ const createScene = async function () {
             else if (dsm.getDeviceSource(BABYLON.DeviceType.Keyboard).getInput(79) == 1) { // o = mark out
                 currentColor = new BABYLON.Color3(1, 0.5, 0.5);
                 controlsText.color = "red";
-                controlsText.text = "Pilot Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop: l\nReset marks: X";
+                controlsText.text = "Video Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop: l\nReset marks: X";
                 pauseVideo();
                 end = videoTexture.video.currentTime;
                 outset = true;
@@ -657,7 +657,7 @@ const createScene = async function () {
             else if (dsm.getDeviceSource(BABYLON.DeviceType.Keyboard).getInput(76) == 1) { // l = loop selected frames / part of video 
                 currentColor = new BABYLON.Color3(1, 0.5, 0.5);
                 controlsText.color = "red";
-                controlsText.text = "Pilot Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop: l\nReset marks: X";
+                controlsText.text = "Video Controls:\nscroll 1 second: b|f\nPlay: P\nPause: Spacebar\nmark in: I\nmark out: O\nloop: l\nReset marks: X";
                 if(loop) {
                     loop = false; 
                 }
